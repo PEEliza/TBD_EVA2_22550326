@@ -1,0 +1,202 @@
+EVA2_1_INTEGRIDAD_REFERENCIAL
+
+MySQL Shell 8.0.38
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 18
+Server version: 8.0.39 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create database tbd_eva2
+                               -> ;
+Query OK, 1 row affected (0.0344 sec)
+ MySQL  localhost:3306 ssl  SQL > use tbd_eva2;
+Default schema set to `tbd_eva2`.
+Fetching global names, object names from `tbd_eva2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > create table cliente(
+                                         -> id int key autoincrement,
+                                         -> nombre varchar(50) not null,
+                                         -> apellidos varchar(50),
+                                         -> rfc varchar(13) not null);
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'autoincrement,
+nombre varchar(50) not null,
+apellidos varchar(50),
+rfc varchar(1' at line 2
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > create table cliente( id int key auto_increment, nombre varchar(50) not null, apellidos varchar(50), rfc varchar(13) not null);
+Query OK, 0 rows affected (0.1013 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > desc cliente;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| id        | int         | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(50) | NO   |     | NULL    |                |
+| apellidos | varchar(50) | YES  |     | NULL    |                |
+| rfc       | varchar(13) | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+4 rows in set (0.0147 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into cliente(nombre, apellido,rfc)
+                                         -> values("Roberto","Lopez","RBLOMCHSPLA4),
+                                         -> ("Alfredo","Olivas","ALOL070498HCHSPLA4");
+                                         "> );
+                                         "> ^C
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into cliente(nombre,apellido,rfc)
+                                         -> values("Ruben","Gamboa","GARC0305054Y1"),
+                                         -> ("Alfredo","Olivas","ALOL040798H7");
+ERROR: 1054 (42S22): Unknown column 'apellido' in 'field list'
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into cliente(nombre,apellidos,rfc) values("Ruben","Gamboa","GARC0305054Y1"), ("Alfredo","Olivas","ALOL040798H7");
+Query OK, 2 rows affected (0.0072 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > create tbale factura(
+                                         -> folio int key auto_increment,
+                                         -> idCliente int not null
+                                         -> foreign key(idCliente)
+                                         -> references cliente(id));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tbale factura(
+folio int key auto_increment,
+idCliente int not null
+foreign key(' at line 1
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > create tbale factura( folio int key auto_increment, idCliente int not null, foreign key(idCliente)  references cliente(id));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tbale factura( folio int key auto_increment, idCliente int not null, foreign key' at line 1
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > create table factura( folio int key auto_increment, idCliente int not null, foreign key(idCliente)  references cliente(id));
+Query OK, 0 rows affected (0.0679 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > show table factura;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'factura' at line 1
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > show create table factura;
++---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table
+
+ |
++---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| factura | CREATE TABLE `factura` (
+  `folio` int NOT NULL AUTO_INCREMENT,
+  `idCliente` int NOT NULL,
+  PRIMARY KEY (`folio`),
+  KEY `idCliente` (`idCliente`),
+  CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0032 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > show tables;
++--------------------+
+| Tables_in_tbd_eva2 |
++--------------------+
+| cliente            |
+| factura            |
++--------------------+
+2 rows in set (0.0035 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > desc factura;
++-----------+------+------+-----+---------+----------------+
+| Field     | Type | Null | Key | Default | Extra          |
++-----------+------+------+-----+---------+----------------+
+| folio     | int  | NO   | PRI | NULL    | auto_increment |
+| idCliente | int  | NO   | MUL | NULL    |                |
++-----------+------+------+-----+---------+----------------+
+2 rows in set (0.0032 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from cliente;
++----+---------+-----------+---------------+
+| id | nombre  | apellidos | rfc           |
++----+---------+-----------+---------------+
+|  1 | Ruben   | Gamboa    | GARC0305054Y1 |
+|  2 | Alfredo | Olivas    | ALOL040798H7  |
++----+---------+-----------+---------------+
+2 rows in set (0.0030 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)
+                                         -> value(5);
+ERROR: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`tbd_eva2`.`factura`, CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`id`))
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)  value(1);
+Query OK, 1 row affected (0.0137 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)  value(2);
+Query OK, 1 row affected (0.0134 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)  values(2);
+Query OK, 1 row affected (0.0145 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
++-------+-----------+
+| folio | idCliente |
++-------+-----------+
+|     2 |         1 |
+|     3 |         2 |
+|     4 |         2 |
++-------+-----------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > delete from cliente where id = 1;
+ERROR: 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`tbd_eva2`.`factura`, CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`id`))
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > delete from factura
+                                         -> where idCliente=1;
+Query OK, 1 row affected (0.0144 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
++-------+-----------+
+| folio | idCliente |
++-------+-----------+
+|     3 |         2 |
+|     4 |         2 |
++-------+-----------+
+2 rows in set (0.0005 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > delete from factura  where idCliente=1;
+Query OK, 0 rows affected (0.0013 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
++-------+-----------+
+| folio | idCliente |
++-------+-----------+
+|     3 |         2 |
+|     4 |         2 |
++-------+-----------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > delete from factura  where idCliente=2;
+Query OK, 2 rows affected (0.0130 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
+Empty set (0.0005 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into cliente(nombre,apellidos,rfc) values("Ruben","Gamboa","GARC0305054Y1"), ("Alfredo","Olivas","ALOL040798H7");
+Query OK, 2 rows affected (0.0134 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)  value(2);
+Query OK, 1 row affected (0.0130 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente)  value(1);
+Query OK, 1 row affected (0.0148 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
++-------+-----------+
+| folio | idCliente |
++-------+-----------+
+|     6 |         1 |
+|     5 |         2 |
++-------+-----------+
+2 rows in set (0.0018 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > alter table factura
+                                         -> drop constraint factura_ibfk_1;
+Query OK, 0 rows affected (0.0171 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > show create table factura;
++---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table
+                                                                                         |
++---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| factura | CREATE TABLE `factura` (
+  `folio` int NOT NULL AUTO_INCREMENT,
+  `idCliente` int NOT NULL,
+  PRIMARY KEY (`folio`),
+  KEY `idCliente` (`idCliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > insert into factura(idcliente) value(5);
+Query OK, 1 row affected (0.0130 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL > select * from factura;
++-------+-----------+
+| folio | idCliente |
++-------+-----------+
+|     6 |         1 |
+|     5 |         2 |
+|     7 |         5 |
++-------+-----------+
+3 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  tbd_eva2  SQL >
